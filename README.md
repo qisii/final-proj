@@ -44,7 +44,7 @@
 
 ## Troubleshooting
 
-### Warning: Python 3.12 was not found on your system...
+### Warning: Python [version] was not found on your system...
 
 If you encounter this warning when running `pipenv shell`:
 
