@@ -98,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'data_viz_final_projectdb',
         'USER': 'postgres',
-        'PASSWORD': 'admin123',
+        'PASSWORD': 'password',
         'HOST': 'localhost',
     }
 }

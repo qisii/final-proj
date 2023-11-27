@@ -7,7 +7,7 @@ class Command(BaseCommand):
     help = 'Import dengue data into PostgreSQL'
 
     def handle(self, *args, **options):
-        file_path = 'dataset/doh-epi-dengue-data-2016-2021 (1).csv'  # Update with the actual path to your dataset
+        file_path = 'dataset/doh-epi-dengue-data-2016-2021 (1).csv'
         with open(file_path, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
