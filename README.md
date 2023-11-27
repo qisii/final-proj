@@ -19,7 +19,7 @@
 
 6. In pgAdmin, create a database with appropriate settings.
 
-7. Back in the project, update the database name and password in your settings.
+7. Back in the project, update the database name and password in your settings.py
 
 8. Run migrations:
 
@@ -40,7 +40,7 @@
     python manage.py runserver
     ```
 
-11. Access the project at [http://localhost:8000/](http://localhost:8000/).
+11. Access the project at http://127.0.0.1:8000/.
 
 ## Troubleshooting
 
