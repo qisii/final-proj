@@ -2,19 +2,9 @@
 <div class="topbar">
     <div class="brand">Group</div>
     <div class="links">
-        <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+        <a href="/" class="{% if request.path == '/' or request.path == '/home/' %}active{% endif %}">Home</a>
         <a href="/project1" class="{% if request.path == '/project1/' %}active{% endif %}">Project 1</a>
         <a href="/project2" class="{% if request.path == '/project2/' %}active{% endif %}">Project 2</a>
         <a href="/project3" class="{% if request.path == '/project3/' %}active{% endif %}">Project 3</a>
     </div>
-    <!-- <div class="member-menu">
-        <button class="dropbtn">
-            <span class="material-icons-sharp">account_circle</span>Members
-        </button>
-        <div class="dropdown-content">
-            <span>Member Name</span>
-            <span>Member Name</span>
-            <span>Member Name</span>
-        </div>
-    </div> -->
 </div>

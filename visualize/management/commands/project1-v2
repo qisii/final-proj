@@ -1,38 +1,3 @@
-from django.shortcuts import render, redirect
-
-# added
-import json
-from django.http import HttpResponse
-import pandas as pd
-import numpy as np
-from .models import Dengue
-from io import BytesIO, StringIO
-import base64
-import matplotlib
-import matplotlib.pyplot as plt
-import io
-import datetime
-import plotly.express as px
-
-# Create your views here.
-
-# do not send an HTML page
-# send back data in a form of JSON
-
-
-def index(request):
-    return render(request, 'visualize/index.html')
-
-def home(request):
-    return render(request, 'visualize/index.html')
-
-# year
-# all input fields
-# quick: highest total number of cases (location)
-# quick: highest total number of deaths (location)
-# quick: highest total number of cases (specific date)
-# quick: highest total number of deaths (specific date)
-
 def clean_data(df):
     df = df.dropna(subset=['loc'])
     df['loc'] = df['loc'].replace('SISQUIJOR', 'SIQUIJOR')
@@ -112,13 +77,3 @@ def project1(request):
     }
 
     return render(request, 'visualize/project1.html', context)
-
-
-# Mapping
-def project2(request):
-    return render(request, 'visualize/project2.html')
-
-
-# Bonus
-def project3(request):
-    return render(request, 'visualize/project3.html')

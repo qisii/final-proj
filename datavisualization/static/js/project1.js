@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Page Headings and Narrations
-    scrollReveal.reveal('.page-subheading, .page-heading, .overview, .narration-column, .narration-hr, .narration-display p', {
+    scrollReveal.reveal('.narration-column, .narration-hr, .narration-display p', {
         origin: 'left',
         distance: '100px',
         delay: 200,
