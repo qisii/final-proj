@@ -54,7 +54,7 @@ If you encounter this warning when running `pipenv shell`:
     python --version
     ```
 
-2. Update Python version:
+2. Update Python version in Pipfile:
 
     ```bash
     psycopg2 = "*"
