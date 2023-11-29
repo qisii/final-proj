@@ -87,35 +87,43 @@ def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_dea
     return narration
 
 # Function to create chart (line chart) for overall stats, when user input is empty
-def create_chart_overall_stats(stats, title, height=500):
+def create_chart_overall_stats(stats, title, height=470):
     fig = px.line(stats, x='year', y=['cases', 'deaths'], labels={'year': 'Year', 'value': 'Count'},
                   title=title, markers=True)
     fig.update_xaxes(tickmode='array', tickvals=stats['year'].unique())
+    fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
+    fig.update_xaxes(gridcolor='#F2F3F4')
+    fig.update_yaxes(gridcolor='#F2F3F4')
     fig.update_layout(xaxis_title='Year', yaxis_title='Count', legend_title='Legend', height=height)
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
 
 # Function to create chart (line chart) for selected year and month and location
-def create_chart_x_month(stats, title, height=500):
+def create_chart_x_month(stats, title, height=470):
     # Convert month numbers to month names
     stats['month'] = stats['month'].apply(lambda x: calendar.month_name[x])
 
     fig = px.line(stats, x='month', y=['cases', 'deaths'], labels={'month': 'Month', 'value': 'Count'},
                   title=title, markers=True)
+    fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')              
     fig.update_layout(xaxis_title='Month', yaxis_title='Count', legend_title='Legend', height=height)
+    fig.update_xaxes(gridcolor='#F2F3F4')
+    fig.update_yaxes(gridcolor='#F2F3F4')
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
 
-def create_chart_x_date(stats, title, height=500):
+def create_chart_x_date(stats, title, height=470):
     # Convert month numbers to month names
     stats['month'] = stats['month'].apply(lambda x: calendar.month_name[x])
 
     fig = px.line(stats, x='date', y=['cases', 'deaths'], labels={'date': 'Date', 'value': 'Count'},
                   title=title, markers=True)
+    fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
     fig.update_layout(xaxis_title='Date', yaxis_title='Count', legend_title='Legend', height=height)
+    fig.update_xaxes(gridcolor='#F2F3F4')
+    fig.update_yaxes(gridcolor='#F2F3F4')
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
-
 
 # function for the dengue data visualization using filters
 def project1(request):
