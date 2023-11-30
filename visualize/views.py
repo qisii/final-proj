@@ -197,7 +197,7 @@ def project1(request):
         max_deaths_month = None
         max_cases_date = None
         max_deaths_date = None
-        title = f'Dengue Cases and Deaths in {selected_location} Over the Years' if selected_location else f'Dengue Cases and Deaths in the month of {selected_month} Over the Years' if selected_month else 'Dengue Cases and Deaths Over the Years'
+        title = f'Dengue Cases and Deaths Over the Years'
         chart_html = create_chart_overall_stats(stats, title) if not stats.empty else ''
 
     # checking the value of the stats
@@ -210,6 +210,7 @@ def project1(request):
 
     narration = generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year) if not stats.empty else f"<b>No data available for the selected filters.</b>"
 
+    print(selected_year)
     context = {
         'dengue_data': df.head(5).to_dict(orient='records'),
         'chart_html': chart_html,
@@ -219,7 +220,7 @@ def project1(request):
         'locations': locations,
         'selected_location': selected_location,
         'selected_month': selected_month,
-        'selected_year': selected_year,
+        'selected_year': int(selected_year) if selected_year else None,
     }
 
     return render(request, 'visualize/project1.html', context)
