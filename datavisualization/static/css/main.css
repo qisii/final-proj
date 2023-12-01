@@ -35,7 +35,7 @@ html {
 body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
-    /* background-image: url('/images/pattern background-3.png'); */
+    /* background-image: url('static/images/pattern background-3.png'); */
     background: var(--color-background);
     background-size: cover;
     background-repeat: no-repeat;
@@ -51,6 +51,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    background: url('/static/images/bg-blue-purple-circles.png') center / cover;
 }
 
 .topbar {
