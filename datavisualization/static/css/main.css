@@ -522,7 +522,7 @@ body {
 }
 
 .custom-select select {
-    padding: 0.5rem 1rem;
+    padding: 0.7rem 1rem;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -619,7 +619,7 @@ body {
 }
 
 .form-geo-display .custom-select select {
-    padding: 0.5rem 1rem;
+    padding: 0.7rem 1rem;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;

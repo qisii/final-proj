@@ -54,13 +54,19 @@ If you encounter this warning when running `pipenv shell`:
     python --version
     ```
 
-2. Update Python version:
+2. Update Python version in Pipfile:
 
     ```bash
-    pipenv --python path/to/python
+    psycopg2 = "*"
+    pandas = "*"
+    matplotlib = "*"
+    plotly = "*"
+    
+    [dev-packages]
+    
+    [requires]
+    python_version = "3.12" #replace with your python version from step 1
     ```
-
-    Replace `path/to/python` with the path from step 1.
 
 3. Activate the virtual environment:
 

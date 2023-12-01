@@ -30,10 +30,8 @@
                 <!-- Form -->
                 <div class="form-column">
                     <div class="form-display">
-                        <form method="post">
+                        <form method="POST">
                             {% csrf_token %}
-                            <!-- <label for="date">Date:</label> -->
-                            <input type="date" id="date" name="date">
                 
                             <!-- <label for="month">Month:</label> -->
                             <div class="custom-select">
@@ -46,23 +44,18 @@
                                 </select>
                             </div>
                 
-                            <!-- <label for="year">Year:</label> -->
+                            <!-- <label for="year">Month:</label> -->
                             <div class="custom-select">
                                 <span class="material-icons-sharp">expand_more</span>
                                 <select id="year" name="year">
                                     <option value="">Select Year</option>
                                     {% for year in unique_years %}
-                                        <option value="{{ year }}">{{ year }}</option>
+                                        <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                
-                            <!-- <label for="location">Location:</label> -->
-                            <!-- <select id="location" name="location">
-                                <option value="">Select Location</option>
-                                <option value="manila">Manila</option>
-                            </select> -->
 
+                            <!-- <label for="location">Location:</label> -->
                             <div class="custom-select">
                                 <span class="material-icons-sharp">expand_more</span>
                                 <select id="location" name="location">
@@ -72,6 +65,9 @@
                                     {% endfor %}
                                 </select>
                             </div>
+
+                            <!-- <label for="date">Date:</label> -->
+                            <input type="date" id="date" name="date">
                 
                             <button type="submit">Submit</button>
                         </form>
