@@ -95,13 +95,13 @@ body {
 
 .links a.active::before {
     content: "";
-    width: 8px;
-    height: 8px;
+    width: 90%;
+    height: 1.5px;
     background-color: var(--color-warning);
-    border-radius: 50%;
+    /* border-radius: 50%; */
     position: absolute;
-    top: 50%;
-    right: -12px; /* Adjust this value based on your design */
+    bottom: 0;
+    right: auto; /* Adjust this value based on your design */
     transform: translateY(-50%);
 }
 
