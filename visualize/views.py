@@ -174,7 +174,7 @@ def project1(request):
             max_cases_date = max_cases_date.strftime('%Y-%m-%d')
             max_deaths_date = max_deaths_date.strftime('%Y-%m-%d')
 
-        title = f'Dengue Cases and Deaths in the Year {selected_year} for {selected_month}' + (f' in {selected_location}' if selected_location else '')
+        title = f'Dengue Cases and Deaths for {selected_month} {selected_year}' + (f' in {selected_location}' if selected_location else '')
         chart_html = create_chart_x_date(stats, title) if not stats.empty else ''
     elif selected_year:
         stats = df_filtered.groupby(['year', 'month']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
