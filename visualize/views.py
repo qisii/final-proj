@@ -197,7 +197,7 @@ def project1(request):
         max_deaths_month = None
         max_cases_date = None
         max_deaths_date = None
-        title = f'Dengue Cases and Deaths Over the Years'
+        title = f'Dengue Cases and Deaths' + (f' in the month of {selected_month}' if selected_month else '')  + f' Over the Years'
         chart_html = create_chart_overall_stats(stats, title) if not stats.empty else ''
 
     # checking the value of the stats
