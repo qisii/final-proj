@@ -38,7 +38,7 @@ def clean_data(df):
     return df
 
 # function to generate narrations
-def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year):
+def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year,selected_date):
     narration = "The graph illustrates Dengue cases and deaths"
 
     if selected_month:
@@ -48,6 +48,14 @@ def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_dea
         narration += f" in <b>{selected_location}</b>"
 
     narration += " across years."
+
+    if selected_date:
+        narration = "The graph illustrates Dengue cases and deaths"
+
+        selected_date = pd.to_datetime(selected_date).strftime('%B %d, %Y')
+        narration += f" on <b>{selected_date}</b>"
+    
+    narration += " across locations."
 
     if selected_year:
         narration = "The graph illustrates the monthly Dengue cases and deaths"
@@ -63,27 +71,27 @@ def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_dea
         narration += f" in the year <b>{selected_year}.</b>"
 
         if max_cases_month:
-            narration += f"<br><br>The month with the highest total number of cases is <b>{max_cases_month}</b>"
+            narration += f"<br><br>The month with the highest total number of cases is <b>{max_cases_month}</b>."
 
         if max_deaths_month:
-            narration += f"<br><br>The month with the highest total number of deaths is <b>{max_deaths_month}</b>"
+            narration += f"<br><br>The month with the highest total number of deaths is <b>{max_deaths_month}</b>."
         
         if max_cases_date:
             max_cases_date = pd.to_datetime(max_cases_date).strftime('%B %d, %Y')
-            narration += f"<br><br>The date with the highest total number of cases is <b>{max_cases_date}</b>"
+            narration += f"<br><br>The date with the highest total number of cases is <b>{max_cases_date}</b>."
 
         if max_deaths_date:
             max_deaths_date = pd.to_datetime(max_deaths_date).strftime('%B %d, %Y')
-            narration += f"<br><br>The date with the highest total number of deaths is <b>{max_deaths_date}</b>"
+            narration += f"<br><br>The date with the highest total number of deaths is <b>{max_deaths_date}</b>."
 
     if not selected_year:
-        if max_cases_year != 0:
-            narration += f"<br><br>The year with the highest total number of cases is <b>{max_cases_year}</b>"
+        if max_cases_year != 0 and max_cases_year != None:
+            narration += f"<br><br>The year with the highest total number of cases is <b>{max_cases_year}</b>."
 
-        if max_deaths_year != 0:
-            narration += f"<br><br>The year with the highest total number of deaths is <b>{max_deaths_year}</b>"
+        if max_deaths_year != 0 and max_deaths_year != None:
+            narration += f"<br><br>The year with the highest total number of deaths is <b>{max_deaths_year}</b>."
 
-    narration += ".<br><br>"
+    narration += "<br>"
     return narration
 
 # Function to create chart (line chart) for overall stats, when user input is empty
@@ -98,7 +106,7 @@ def create_chart_overall_stats(stats, title, height=470):
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
 
-# Function to create chart (line chart) for selected year and month and location
+# Function to create chart (line chart) for months
 def create_chart_x_month(stats, title, height=470):
     # Convert month numbers to month names
     stats['month'] = stats['month'].apply(lambda x: calendar.month_name[x])
@@ -112,18 +120,27 @@ def create_chart_x_month(stats, title, height=470):
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
 
-def create_chart_x_date(stats, title, height=470):
+# Function to create chart (line chart) for dates
+def create_chart_x_date(stats, title, selected_date=None, height=470):
     # Convert month numbers to month names
     stats['month'] = stats['month'].apply(lambda x: calendar.month_name[x])
 
     fig = px.line(stats, x='date', y=['cases', 'deaths'], labels={'date': 'Date', 'value': 'Count'},
                   title=title, markers=True)
+
+    if selected_date:
+        # Highlight selected date with a larger marker
+        selected_date_index = stats[stats['date'] == selected_date].index
+        fig.update_traces(marker=dict(size=[20 if i in selected_date_index else 7 for i in range(len(stats))]))
+
     fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
     fig.update_layout(xaxis_title='Date', yaxis_title='Count', legend_title='Legend', height=height)
     fig.update_xaxes(gridcolor='#F2F3F4')
     fig.update_yaxes(gridcolor='#F2F3F4')
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
+
+# Function to create chart (two bar chart)
 
 # function for the dengue data visualization using filters
 def project1(request):
@@ -141,6 +158,7 @@ def project1(request):
     selected_location = request.POST.get('location')
     selected_month = request.POST.get('month')
     selected_year = request.POST.get('year')
+    selected_date = request.POST.get('date')
 
     # handle user inputs
     if selected_location and selected_month and selected_year:
@@ -157,10 +175,16 @@ def project1(request):
         df_filtered = df[df['loc'] == selected_location]
     elif selected_year:
         df_filtered = df[df['year'] == int(selected_year)]
+    elif selected_date:
+        selected_date = datetime.datetime.strptime(selected_date, '%Y-%m-%d').date()
+        selected_month_date = selected_date.strftime('%B')
+        selected_year_date = selected_date.year
+
+        df_filtered = df[(df['month'] == unique_months.index(selected_month_date) + 1) & (df['year'] == int(selected_year_date))]
     else:
         df_filtered = df
 
-    # Separate stats based on whether a specific year is selected
+    # Separate stats based on whether a specific request is selected
     if selected_year and selected_month:
         stats = df_filtered.groupby(['year', 'month', 'date']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
         max_cases_month = None
@@ -191,6 +215,11 @@ def project1(request):
 
         title = f'Dengue Cases and Deaths in the Year {selected_year}' + (f' in {selected_location}' if selected_location else '')
         chart_html = create_chart_x_month(stats, title) if not stats.empty else ''
+    elif selected_date:
+        stats = df_filtered.groupby(['year', 'month', 'date']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
+
+        title = f'Dengue Cases and Deaths on {selected_date.strftime("%Y-%m-%d")}'
+        chart_html = create_chart_x_date(stats, title, selected_date) if not stats.empty else ''
     else:
         stats = df_filtered.groupby('year').agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
         max_cases_month = None
@@ -204,13 +233,25 @@ def project1(request):
     if not stats.empty:
         max_cases_year = int(stats.loc[stats['cases'].idxmax()]['year'])
         max_deaths_year = int(stats.loc[stats['deaths'].idxmax()]['year'])
+        
+        if selected_date:
+            max_deaths_date = None
+            max_cases_date = None
+            max_cases_month = None
+            max_deaths_month = None
+            max_cases_year = None
+            max_deaths_year = None
     else:
         max_cases_year = None
         max_deaths_year = None
 
-    narration = generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year) if not stats.empty else f"<b>No data available for the selected filters.</b>"
+    narration = generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year, selected_date) if not stats.empty else f"<b>No data available for the selected filters.</b>"
 
-    print(selected_year)
+    # if selected_date:
+    #     selected_date_formatted = selected_date.strftime('%Y/%m/%d')
+    # else:
+    #     selected_date_formatted = None
+
     context = {
         'dengue_data': df.head(5).to_dict(orient='records'),
         'chart_html': chart_html,
@@ -221,9 +262,11 @@ def project1(request):
         'selected_location': selected_location,
         'selected_month': selected_month,
         'selected_year': int(selected_year) if selected_year else None,
+        'selected_date': selected_date,
     }
 
     return render(request, 'visualize/project1.html', context)
+
 
 # Mapping
 def project2(request):
