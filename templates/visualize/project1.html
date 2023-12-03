@@ -67,7 +67,7 @@
                             </div>
 
                             <!-- <label for="date">Date:</label> -->
-                            <input type="date" id="date" name="date">
+                            <input type="date" id="date" name="date" value="{% if selected_date %}{{ selected_date|date:'Y-m-d' }}{% endif %}">
                 
                             <button type="submit">Submit</button>
                         </form>
