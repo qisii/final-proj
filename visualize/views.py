@@ -38,7 +38,7 @@ def clean_data(df):
     return df
 
 # function to generate narrations
-def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year,selected_date):
+def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year, selected_date, has_data):
     narration = "The graph illustrates Dengue cases and deaths"
 
     if selected_month:
@@ -56,6 +56,9 @@ def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_dea
         narration += f" on <b>{selected_date}</b>"
     
     narration += " across locations."
+
+    if selected_date and has_data == False:
+        narration = f"No data available for {selected_date}"
 
     if selected_year:
         narration = "The graph illustrates the monthly Dengue cases and deaths"
@@ -189,6 +192,7 @@ def project1(request):
         stats = df_filtered.groupby(['year', 'month', 'date']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
         max_cases_month = None
         max_deaths_month = None
+        has_data = None
 
         if not stats.empty:
             max_cases_date = stats.loc[stats['cases'].idxmax()]['date']
@@ -204,6 +208,7 @@ def project1(request):
         stats = df_filtered.groupby(['year', 'month']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
         max_cases_date = None
         max_deaths_date = None
+        has_data = None
 
         if not stats.empty:
             max_cases_month = stats.loc[stats['cases'].idxmax()]['month']
@@ -218,14 +223,20 @@ def project1(request):
     elif selected_date:
         stats = df_filtered.groupby(['year', 'month', 'date']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
 
-        title = f'Dengue Cases and Deaths on {selected_date.strftime("%Y-%m-%d")}'
-        chart_html = create_chart_x_date(stats, title, selected_date) if not stats.empty else ''
+        if not stats[stats['date'] == selected_date].empty:
+            title = f'Dengue Cases and Deaths on {selected_date.strftime("%Y-%m-%d")}'
+            chart_html = create_chart_x_date(stats, title, selected_date)
+        else:
+            title = f'No data available for {selected_date.strftime("%Y-%m-%d")}'
+            chart_html = create_chart_x_date(stats, title, selected_date)
+            has_data = False
     else:
         stats = df_filtered.groupby('year').agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
         max_cases_month = None
         max_deaths_month = None
         max_cases_date = None
         max_deaths_date = None
+        has_data = None
         title = f'Dengue Cases and Deaths' + (f' in the month of {selected_month}' if selected_month else '')  + f' Over the Years'
         chart_html = create_chart_overall_stats(stats, title) if not stats.empty else ''
 
@@ -245,7 +256,7 @@ def project1(request):
         max_cases_year = None
         max_deaths_year = None
 
-    narration = generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year, selected_date) if not stats.empty else f"<b>No data available for the selected filters.</b>"
+    narration = generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year, selected_date, has_data) if not stats.empty else f"<b>No data available for the selected filters.</b>"
 
     # if selected_date:
     #     selected_date_formatted = selected_date.strftime('%Y/%m/%d')
