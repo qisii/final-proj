@@ -15,8 +15,8 @@
     --color-dark: #363949;
     --color-light: rgba(132, 186, 200, 0.18);
     --color-dark-variant: #677483;
-    --color-background: #26335D;
-    --color-form: #30365f;
+    --color-background: #1e2746;
+    --color-form: rgba(133, 133, 133, 0.604);
     --color-input: #373f6d;
     --card-border-radius: 2rem;
     --border-radius-1: 0.4rem;
@@ -36,7 +36,8 @@ body {
     margin: 0;
     font-family: 'Poppins', sans-serif;
     /* background-image: url('static/images/pattern background-3.png'); */
-    background: var(--color-background);
+    background: rgb(2,0,38);
+    background: linear-gradient(16deg, rgba(2,0,38,1) 0%, rgba(7,41,112,1) 50%, rgba(12,180,194,1) 100%);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -51,16 +52,21 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background: url('/static/images/bg-blue-purple-circles.png') center / cover;
+    background: url('/static/images/bg-dark.jpg') center / cover;
 }
 
 .topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 6rem 1.5rem 6rem;
-    /* background-color: var(--color-white); */
-    /* box-shadow: var(--box-shadow) */
+    padding: 1rem 4rem 1rem 4rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 99;
+    background-color: var(--color-background); 
+    box-shadow: var(--box-shadow)
 }
 
 .brand {
@@ -74,6 +80,7 @@ body {
     display: flex;
     font-size: 1rem;
     gap: 2rem;
+    margin-right: 8rem;
 }
 
 .links a {
@@ -95,19 +102,14 @@ body {
 
 .links a.active::before {
     content: "";
-    width: 90%;
+    width: 100%;
     height: 1.5px;
     background-color: var(--color-warning);
     /* border-radius: 50%; */
     position: absolute;
     bottom: 0;
-    right: auto; /* Adjust this value based on your design */
-    transform: translateY(-50%);
-}
-
-.member-menu {
-    position: relative;
-    display: inline-block;
+    /*right: auto;  Adjust this value based on your design */
+    transform: translateY(100%);
 }
 
 .dropbtn {
@@ -155,11 +157,7 @@ body {
     font-weight: bold;
 }
 
-.member-menu:hover .dropdown-content {
-    display: block;
-}
-
-.home-content {
+/* .home-content {
     flex-grow: 1;
     display: flex;
     justify-content: center;
@@ -168,80 +166,43 @@ body {
     position: relative;
 }
 
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%) rotate(0deg);
-    }
-    to {
-        transform: translateX(0) rotate(5deg);
-    }
-}
-@keyframes slideInRight2 {
-    from {
-        transform: translateX(100%) rotate(0deg);
-    }
-    to {
-        transform: translateX(0) rotate(45deg);
-    }
-}
-
-@keyframes slideInLeft {
-    from {
-        transform: translateX(-100%) rotate(0deg);
-    }
-    to {
-        transform: translateX(0) rotate(45deg);
-    }
-}
-
-.image1 {
-    position: absolute;
-    top: 0;
-    right: 5%;
-    max-width: 50%;
-    height: auto;
-    transform: rotate(5deg);
-    animation: slideInRight 1s ease-out;
-}
-
-.image2 {
-    position: absolute;
-    bottom: 0;
-    left: 7%;
-    max-width: 25%;
-    height: auto;
-    transform: rotate(45deg);
-    z-index: 1;
-    animation: slideInLeft 1s ease-out;
-}
-
-.image3 {
-    position: absolute;
-    top: 45%;
-    right: 2%;
-    min-width: 10%;
-    max-width: 25%;
-    height: auto;
-    transform: rotate(45deg);
-    z-index: 1;
-    animation: slideInRight2 1s ease-out;
-}
-
-.image4 {
-    position: absolute;
-    top: 10%;
-    left: 3%;
-    max-width: 25%;
-    height: auto;
-    z-index: 0;
-    animation: slideInLeft 1s ease-out;
-}
 
 .home-heading-container {
     text-align: center;
     z-index: 1;
+} */
+.home-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10rem 6rem 2rem 6rem;
+    position: relative;
 }
 
+.home-content-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px; /* Adjust as needed */
+}
+
+.text-and-button-container {
+    flex: 1;
+    padding-right: 20px; /* Adjust spacing between text and image */
+}
+
+.image-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.image-container img {
+    max-width: 100%;
+    height: auto;
+}
 .home-heading {
     font-family: 'Montserrat', sans-serif;
     color: var(--color-white);
@@ -258,7 +219,7 @@ body {
 
 .buttons-container {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     gap: 10px;
     margin-top: 40px;
 }
@@ -280,7 +241,7 @@ body {
     padding: 15px 45px;
     font-size: 0.9rem;
     background-color: var(--color-primary);
-    border: 1px solid var(--color-warning);
+    border: 1px solid var(--color-info-dark);
     color: var(--color-white);
     border-radius: 5px;
     cursor: pointer;
@@ -337,53 +298,28 @@ body {
     width: 100%;
 }
 
-.member-card {
-    width: 140px;
-    padding: 2rem;
-    margin-right: 1rem;
-    /* box-shadow: var(--box-shadow); */
-    background-color: var(--color-white);
-    /* text-align: center; */
+.team-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 35px;
+    justify-content: center;
 }
 
-.member-card h3 {
-    margin-bottom: 1rem;
-    color: var(--color-dark);
+.team-member {
+    text-align: center;
 }
 
-.member-line {
-    border: 1px solid var(--color-danger);
-    width: 80px;
-    margin-bottom: 1rem;
-    margin-left: 0;
+.team-member img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-.member-card p {
-    margin: 0;
-    color: var(--color-info-dark);
-}
-
-.members-section .member-card:nth-child(odd) {
-    margin-top: 2rem;
-    margin-bottom: -2rem;
-}
-
-.members-section .buttons-container .action-button {
-    font-family: 'Poppins', sans-serif;
-    padding: 15px 45px;
-    font-size: 0.9rem;
-    background: var(--color-warning);
+.team-member p {
+    margin-top: 8px;
+    font-weight: bold;
     color: var(--color-white);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    margin: 2rem 0 2rem 0;
-}
-
-.members-section .buttons-container .action-button:hover {
-    background-color: var(--color-warning);
-    transform: translateY(-10px);
-    transition: transform 0.5s ease-in-out;
 }
 
 /*========================================= Dengue */
@@ -393,6 +329,7 @@ body {
     height: 100vh;
     display: flex;
     flex-direction: column;
+    margin-top: 6rem;
     /* overflow-y: scroll; */
 }
 
@@ -440,7 +377,7 @@ body {
 
 .narration-display {
     padding: 1rem;
-    background-color: var(--color-input);
+    background-color: var(--color-dark);
     border-radius: 5px;
     justify-content: center;
 }
@@ -465,7 +402,7 @@ body {
 
 .form-display {
     padding: 1rem;
-    background-color: var(--color-input);
+    background-color: var(--color-dark);
     margin-bottom: 1rem;
     border-radius: 5px;
 }
@@ -540,6 +477,7 @@ body {
 
 .chart-column {
     margin-bottom: 2rem;
+    
     background-color: var(--color-white);
     border-radius: 5px;
     height: 520px;
@@ -560,7 +498,7 @@ body {
 
 .form-geo-display {
     padding: 1rem;
-    background-color: var(--color-input);
+    background-color: var(--color-dark);
     margin-bottom: 0.5rem;
     border-radius: 5px;
 }
@@ -653,3 +591,29 @@ body {
     margin-bottom: 1rem;
     justify-content: center;
 }
+
+/* Footer Styles */
+.footer {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    bottom: 0;
+}
+
+.footer .container {
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 20px;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-content p {
+    margin: 0;
+    font-size: 14px;
+}
+

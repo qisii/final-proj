@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', function () {
     // scrollReveal.reveal('.image3', { origin: 'right', distance: '20px', delay: 600 });
     // scrollReveal.reveal('.image4', { origin: 'left', distance: '20px', delay: 800 });
 
-    // member cards
+    // members
     scrollReveal.reveal('.member-subheading', { origin: 'bottom', distance: '50px', delay: 100, interval: 100 });
     scrollReveal.reveal('.member-heading', { origin: 'bottom', distance: '50px', delay: 300, interval: 100 });
-    scrollReveal.reveal('.member-card', { origin: 'bottom', distance: '50px', delay: 500, interval: 100 });
+    scrollReveal.reveal('.team-members', { origin: 'top', distance: '50px', delay: 500, interval: 100 });
     scrollReveal.reveal('.members-section .buttons-container', { origin: 'bottom', distance: '50px', delay: 700 });
 
     // Page Headings and Narrations
