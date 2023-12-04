@@ -30,5 +30,26 @@ class PizzaHutLocation(models.Model):
     def __str__(self):
         return f"{self.type} - {self.address_1}, {self.city}, {self.state} {self.postal_code}"
 
-# Plastic Data Model
-
+# Family IES Data Model
+class FamilyIncomeExpenditure(models.Model):
+    region = models.CharField(max_length=255, null=True, blank=True)
+    income = models.IntegerField(null=True, blank=True)
+    food = models.IntegerField(null=True, blank=True)
+    rice = models.IntegerField(null=True, blank=True)
+    bread_cereal = models.IntegerField(null=True, blank=True)
+    meat = models.IntegerField(null=True, blank=True)
+    fish = models.IntegerField(null=True, blank=True)
+    fruits = models.IntegerField(null=True, blank=True)
+    vegetables = models.IntegerField(null=True, blank=True)
+    hotels = models.IntegerField(null=True, blank=True)
+    alcohol = models.IntegerField(null=True, blank=True)
+    tobacco = models.IntegerField(null=True, blank=True)
+    clothing = models.IntegerField(null=True, blank=True)
+    housing = models.IntegerField(null=True, blank=True)
+    medical = models.IntegerField(null=True, blank=True)
+    transport = models.IntegerField(null=True, blank=True)
+    communication = models.IntegerField(null=True, blank=True)
+    education = models.IntegerField(null=True, blank=True)
+    miscellaneous = models.IntegerField(null=True, blank=True)
+    occasions = models.IntegerField(null=True, blank=True)
+    farming = models.IntegerField(null=True, blank=True)

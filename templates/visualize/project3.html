@@ -13,8 +13,8 @@
     <div class="viz-content">
         <!-- Page Headings -->
         <p class="page-subheading">Dashboard</p>
-        <p class="page-heading">Lorem ipsum dolor sit amet</p>
-        <div class="overview">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam nisi ac nisl scelerisque, et condimentum felis congue.
+        <p class="page-heading">Family Income and Expenditure Survey Data (2015) </p>
+        <div class="overview"><strong>Context: </strong>The Philippine Statistics Authority (PSA) spearheads the conduct of the Family Income and Expenditure Survey (FIES) nationwide. The survey, which is undertaken every three (3) years, is aimed at providing data on family income and expenditure, including, among others, levels of consumption by item of expenditure, sources of income in cash, and related information affecting income and expenditure levels and patterns in the Philippines. 
         </div>
         <div class="page-content">
             <div class="columns-container">
@@ -22,51 +22,35 @@
                 <div class="narration-column">
                     <div class="narration-display">
                         <hr class="narration-hr">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam nisi ac nisl scelerisque, et condimentum felis congue.</p>
+                        <p>Inside this data set is some selected variables from the latest Family Income and Expenditure Survey (FIES) in the Philippines. It contains more than 40k observations and 60 variables which is primarily comprised of the household income and expenditures of that specific household.</p>
+                        <br>
+                        <hr class="narration-hr">
+                        <p>{{ narration|safe }}</p>
                     </div>
                 </div>
                 <!-- Form -->
                 <div class="form-column">
                     <div class="form-display">
-                        <form>
-                            <!-- <label for="date">Date:</label> -->
-                            <input type="date" id="date" name="date">
-                
-                            <!-- <label for="month">Month:</label> -->
+                        <form method="post"> 
+                            {% csrf_token %}
+                            <!-- For Region -->
                             <div class="custom-select">
                                 <span class="material-icons-sharp">expand_more</span>
-                                <select id="month" name="month">
-                                    <!-- Add your location options here -->
-                                    <option value="">Select Month</option>
-                                    <option value=""></option>
-                                    <!-- Add other locations as needed -->
+                                <select id="region" name="region">
+                                    <option value="">Select Region</option>
+                                    {% for region in regions %}
+                                        <option value="{{ region }}">{{ region }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
-                
-                            <!-- <label for="year">Year:</label> -->
+                            <!-- For Expenditure Data -->
                             <div class="custom-select">
                                 <span class="material-icons-sharp">expand_more</span>
-                                <select id="year" name="year">
-                                    <!-- Add your location options here -->
-                                    <option value="">Select Year</option>
-                                    <option value=""></option>
-                                    <!-- Add other locations as needed -->
-                                </select>
-                            </div>
-                
-                            <!-- <label for="location">Location:</label> -->
-                            <!-- <select id="location" name="location">
-                                <option value="">Select Location</option>
-                                <option value="manila">Manila</option>
-                            </select> -->
-
-                            <div class="custom-select">
-                                <span class="material-icons-sharp">expand_more</span>
-                                <select id="location" name="location">
-                                    <!-- Add your location options here -->
-                                    <option value="">Select Location</option>
-                                    <option value=""></option>
-                                    <!-- Add other locations as needed -->
+                                <select id="expenditure" name="expenditure">
+                                    <option value="">Select Expenditure</option>
+                                    {% for expenditure in expenditure_columns %}
+                                        <option value="{{ expenditure }}">{{ expenditure }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                 
@@ -78,7 +62,7 @@
                     <!-- Chart -->
                     <div class="chart-column">
                         <div class="chart-display">
-                            
+                            <div class="figure">{{ chart|safe }}</div>
                         </div>
                     </div>
                     <!-- End of Chart -->
