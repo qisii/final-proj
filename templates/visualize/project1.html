@@ -27,6 +27,7 @@
                         <p>{{ narration|safe }}</p>
                     </div>
                 </div>
+
                 <!-- Form -->
                 <div class="form-column">
                     <div class="form-display">
@@ -66,6 +67,16 @@
                                 </select>
                             </div>
 
+                            <div class="custom-select">
+                                <span class="material-icons-sharp">expand_more</span>
+                                <select id="region" name="region">
+                                    <option value="">Select Region</option>
+                                    {% for region in regions %}
+                                        <option value="{{ region }}" {% if region == selected_region %}selected{% endif %}>{{ region }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
                             <!-- <label for="date">Date:</label> -->
                             <input type="date" id="date" name="date" value="{% if selected_date %}{{ selected_date|date:'Y-m-d' }}{% endif %}">
                 
@@ -93,5 +104,12 @@
     </div>
 </div>
 <!-- End of Container -->
+{% if messages %}
+    {% for message in messages %}
+    <script>   
+         swal('{{ message }}');
+    </script>
+    {% endfor %}
+{% endif %}
 
 {% endblock %}
