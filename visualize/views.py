@@ -11,6 +11,7 @@ import base64
 import matplotlib
 import matplotlib.pyplot as plt
 import io
+import math
 import datetime, calendar
 import plotly.express as px
 from django.contrib import messages
@@ -133,20 +134,36 @@ def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_dea
     narration += "<br>"
     return narration
 
+# default bar chart
+def create_chart_region_stats(region_stats, height=490):
+    fig_cases = px.bar(region_stats, x='cases', y='region', color='cases', labels={'region': 'Region','value': 'Count'},
+                       title=f'Dengue Cases Across Regions Over the Years', height=height)
+    
+    fig_deaths = px.bar(region_stats, x='deaths', y='region', color='deaths', labels={'region': 'Region','value': 'Count'},
+                        title=f'Dengue Deaths Across Regions Over the Years', height=height)
+    
+    for fig in [fig_cases, fig_deaths]:
+        fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
+        fig.update_xaxes(gridcolor='#F2F3F4')
+        fig.update_yaxes(gridcolor='#F2F3F4')
+        fig.update_layout(title={'text': fig.layout.title.text, 'x': 0.5})
+    
+    return fig_cases.to_html(), fig_deaths.to_html()
+
 # Function to create chart (line chart) for overall stats, when user input is empty
-def create_chart_overall_stats(stats, title, height=490):
+def create_chart_overall_stats(stats, title, height=500):
     fig = px.line(stats, x='year', y=['cases', 'deaths'], labels={'year': 'Year', 'value': 'Count'},
                   title=title, markers=True)
     fig.update_xaxes(tickmode='array', tickvals=stats['year'].unique())
     fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
     fig.update_xaxes(gridcolor='#F2F3F4')
-    fig.update_yaxes(gridcolor='#F2F3F4')
+    fig.update_yaxes(gridcolor='#F2F3F4', dtick=10 ** math.ceil(math.log10(max(stats['cases'].max(), stats['deaths'].max())))/20)
     fig.update_layout(xaxis_title='Year', yaxis_title='Count', legend_title='Legend', height=height)
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
 
 # Function to create chart (line chart) for months
-def create_chart_x_month(stats, title, height=490):
+def create_chart_x_month(stats, title, height=500):
     # Convert month numbers to month names
     stats['month'] = stats['month'].apply(lambda x: calendar.month_name[x])
 
@@ -155,9 +172,10 @@ def create_chart_x_month(stats, title, height=490):
     fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')              
     fig.update_layout(xaxis_title='Month', yaxis_title='Count', legend_title='Legend', height=height)
     fig.update_xaxes(gridcolor='#F2F3F4')
-    fig.update_yaxes(gridcolor='#F2F3F4')
+    fig.update_yaxes(gridcolor='#F2F3F4', dtick=10 ** math.ceil(math.log10(max(stats['cases'].max(), stats['deaths'].max())))/20)
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
+    
 
 # Function to create chart (line chart) for dates
 def create_chart_x_date(stats, title, selected_date=None, height=490):
@@ -179,7 +197,7 @@ def create_chart_x_date(stats, title, selected_date=None, height=490):
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
 
-def create_chart_x_location(stats, title, height=490):
+def create_chart_x_location(stats, title, height=500):
     fig = px.line(stats, x='loc', y=['cases', 'deaths'], labels={'loc': 'Location', 'value': 'Count'},
                   title=title, markers=True)
     fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')              
@@ -188,8 +206,6 @@ def create_chart_x_location(stats, title, height=490):
     fig.update_yaxes(gridcolor='#F2F3F4')
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
-
-# Function to create chart (two bar chart)
 
 # function for the dengue data visualization using filters
 def project1(request):
@@ -397,6 +413,15 @@ def project1(request):
 
         narration = generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, max_cases_location, max_deaths_location, selected_location, selected_month, selected_year, selected_date, selected_region, has_data) if not stats.empty else f"<b>No data available for the selected filters.</b>"
 
+    # default
+    # by regions
+    region_stats = df.groupby('region').agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
+
+    if not region_stats.empty:
+        region_chart_html_cases, region_chart_html_deaths = create_chart_region_stats(region_stats)
+    else:
+        region_chart_html_cases, region_chart_html_deaths = '', ''
+
     # if selected_date:
     #     selected_date_formatted = selected_date.strftime('%Y/%m/%d')
     # else:
@@ -405,6 +430,8 @@ def project1(request):
     context = {
         'dengue_data': df.head(5).to_dict(orient='records'),
         'chart_html': chart_html,
+        'region_chart_html_cases': region_chart_html_cases,
+        'region_chart_html_deaths': region_chart_html_deaths,
         'narration': narration,
         'unique_years': unique_years,
         'unique_months': unique_months,
