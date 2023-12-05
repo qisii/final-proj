@@ -27,9 +27,12 @@ def home(request):
     return render(request, 'visualize/index.html')
 
 # function for data preprocessing
+# function for data preprocessing
 def clean_data(df):
     df = df.dropna(subset=['loc'])
     df['loc'] = df['loc'].replace('SISQUIJOR', 'SIQUIJOR')
+    df['loc'] = df['loc'].replace(' CAGAYAN DE ORO CITY', 'CAGAYAN DE ORO CITY')
+    df['loc'] = df['loc'].replace(' NEGROS ORIENTAL', 'NEGROS ORIENTAL')
     df['cases'] = df['cases'].fillna(0)
     df['deaths'] = df['deaths'].fillna(0)
     df['date'] = pd.to_datetime(df['date'], errors='coerce').dt.date
@@ -38,27 +41,44 @@ def clean_data(df):
     return df
 
 # function to generate narrations
-def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year, selected_date, has_data):
-    narration = "The graph illustrates Dengue cases and deaths"
+def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, max_cases_location, max_deaths_location, selected_location, selected_month, selected_year, selected_date, selected_region, has_data):
+    narration = "The graph illustrates the Total Dengue cases and deaths"
 
     if selected_month:
         narration += f" in the month of <b>{selected_month}</b>"
 
     if selected_location:
         narration += f" in <b>{selected_location}</b>"
+    elif selected_region:
+        narration += f" in <b>{selected_region}</b>"
 
     narration += " across years."
 
     if selected_date:
-        narration = "The graph illustrates Dengue cases and deaths"
+        
+        if has_data == True:
+            narration = "The graph illustrates Dengue cases and deaths"
 
-        selected_date = pd.to_datetime(selected_date).strftime('%B %d, %Y')
-        narration += f" on <b>{selected_date}</b>"
-    
-    narration += " across locations."
+            selected_date = pd.to_datetime(selected_date).strftime('%B %d, %Y')
+            narration += f" on <b>{selected_date}</b>"
 
-    if selected_date and has_data == False:
-        narration = f"No data available for {selected_date}"
+            if selected_location:
+                narration += f" in <b>{selected_location}</b>."
+            elif selected_region:
+                narration += f" in <b>{selected_region}</b>"
+            else:
+                narration += " across locations."
+
+        if has_data == False:
+            selected_date = pd.to_datetime(selected_date).strftime('%B %d, %Y')
+            narration = f"No data available for <b>{selected_date}</b>"
+
+            if selected_location:
+                narration += f" in <b>{selected_location}</b>."
+            elif selected_region:
+                narration += f" in <b>{selected_region}</b>"
+            else:
+                narration += " across locations."
 
     if selected_year:
         narration = "The graph illustrates the monthly Dengue cases and deaths"
@@ -70,6 +90,8 @@ def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_dea
         
         if selected_location:
             narration += f" in <b>{selected_location}</b>"
+        elif selected_region:
+            narration += f" in <b>{selected_region}</b>"
 
         narration += f" in the year <b>{selected_year}.</b>"
 
@@ -85,7 +107,13 @@ def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_dea
 
         if max_deaths_date:
             max_deaths_date = pd.to_datetime(max_deaths_date).strftime('%B %d, %Y')
-            narration += f"<br><br>The date with the highest total number of deaths is <b>{max_deaths_date}</b>."
+            narration += f"<br><br>The date with the highest total number of deaths is <b>{max_deaths_date}</b>."\
+        
+        if max_cases_location:
+            narration += f"<br><br>The location with the highest total number of cases is <b>{max_cases_location}</b>."
+
+        if max_deaths_location:
+            narration += f"<br><br>The location with the highest total number of deaths is <b>{max_deaths_location}</b>."
 
     if not selected_year:
         if max_cases_year != 0 and max_cases_year != None:
@@ -94,11 +122,17 @@ def generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_dea
         if max_deaths_year != 0 and max_deaths_year != None:
             narration += f"<br><br>The year with the highest total number of deaths is <b>{max_deaths_year}</b>."
 
+        if max_cases_location:
+            narration += f"<br><br>The location with the highest total number of cases is <b>{max_cases_location}</b>."
+
+        if max_deaths_location:
+            narration += f"<br><br>The location with the highest total number of deaths is <b>{max_deaths_location}</b>."
+
     narration += "<br>"
     return narration
 
 # Function to create chart (line chart) for overall stats, when user input is empty
-def create_chart_overall_stats(stats, title, height=470):
+def create_chart_overall_stats(stats, title, height=490):
     fig = px.line(stats, x='year', y=['cases', 'deaths'], labels={'year': 'Year', 'value': 'Count'},
                   title=title, markers=True)
     fig.update_xaxes(tickmode='array', tickvals=stats['year'].unique())
@@ -110,7 +144,7 @@ def create_chart_overall_stats(stats, title, height=470):
     return fig.to_html()
 
 # Function to create chart (line chart) for months
-def create_chart_x_month(stats, title, height=470):
+def create_chart_x_month(stats, title, height=490):
     # Convert month numbers to month names
     stats['month'] = stats['month'].apply(lambda x: calendar.month_name[x])
 
@@ -124,7 +158,7 @@ def create_chart_x_month(stats, title, height=470):
     return fig.to_html()
 
 # Function to create chart (line chart) for dates
-def create_chart_x_date(stats, title, selected_date=None, height=470):
+def create_chart_x_date(stats, title, selected_date=None, height=490):
     # Convert month numbers to month names
     stats['month'] = stats['month'].apply(lambda x: calendar.month_name[x])
 
@@ -143,6 +177,16 @@ def create_chart_x_date(stats, title, selected_date=None, height=470):
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
 
+def create_chart_x_location(stats, title, height=490):
+    fig = px.line(stats, x='loc', y=['cases', 'deaths'], labels={'loc': 'Location', 'value': 'Count'},
+                  title=title, markers=True)
+    fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')              
+    fig.update_layout(xaxis_title='Location', yaxis_title='Count', legend_title='Legend', height=height)
+    fig.update_xaxes(gridcolor='#F2F3F4')
+    fig.update_yaxes(gridcolor='#F2F3F4')
+    fig.update_layout(title={'text': title, 'x': 0.5})
+    return fig.to_html()
+
 # Function to create chart (two bar chart)
 
 # function for the dengue data visualization using filters
@@ -153,98 +197,166 @@ def project1(request):
 
     # values for the dropdowns
     locations = sorted(df['loc'].unique())
+    regions = sorted(df['region'].unique())
     unique_years = sorted(df['year'].unique())
     unique_months = sorted(df['date'].apply(lambda x: x.strftime('%B')).unique(),
                             key=lambda x: datetime.datetime.strptime(x, '%B'))
-
+                            
     # user inputs
     selected_location = request.POST.get('location')
     selected_month = request.POST.get('month')
     selected_year = request.POST.get('year')
+    selected_region = request.POST.get('region')
     selected_date = request.POST.get('date')
 
     # handle user inputs
+    # filter dataframe before calculating stats(total cases and deaths)
+    # ===== 3 inputs
     if selected_location and selected_month and selected_year:
         df_filtered = df[(df['loc'] == selected_location) & (df['month'] == unique_months.index(selected_month) + 1) & (df['year'] == int(selected_year))]
+    elif selected_region and selected_month and selected_year:
+        df_filtered = df[(df['region'] == selected_region) & (df['month'] == unique_months.index(selected_month) + 1) & (df['year'] == int(selected_year))]
+    # ===== 2 inputs
     elif selected_location and selected_month:
         df_filtered = df[(df['loc'] == selected_location) & (df['month'] == unique_months.index(selected_month) + 1)]
     elif selected_month and selected_year:
         df_filtered = df[(df['month'] == unique_months.index(selected_month) + 1) & (df['year'] == int(selected_year))]
     elif selected_location and selected_year:
         df_filtered = df[(df['loc'] == selected_location) & (df['year'] == int(selected_year))]
+    elif selected_date and selected_location:
+        selected_date = datetime.datetime.strptime(selected_date, '%Y-%m-%d').date()
+        selected_month_date = selected_date.strftime('%B')
+        selected_year_date = selected_date.year
+        df_filtered = df[(df['month'] == unique_months.index(selected_month_date) + 1) & (df['year'] == int(selected_year_date)) & (df['loc'] == selected_location)]
+    elif selected_date and selected_region:
+        selected_date = datetime.datetime.strptime(selected_date, '%Y-%m-%d').date()
+        selected_month_date = selected_date.strftime('%B')
+        selected_year_date = selected_date.year
+        df_filtered = df[(df['month'] == unique_months.index(selected_month_date) + 1) & (df['year'] == int(selected_year_date)) & (df['region'] == selected_region)]
+    elif selected_region and selected_year:
+        df_filtered = df[(df['region'] == selected_region) & (df['year'] == int(selected_year))]
+    elif selected_region and selected_month:
+        df_filtered = df[(df['region'] == selected_region) & (df['month'] == unique_months.index(selected_month) + 1)]
+    # ===== 1 input
     elif selected_month:
         df_filtered = df[df['month'] == unique_months.index(selected_month) + 1]
     elif selected_location:
         df_filtered = df[df['loc'] == selected_location]
+    elif selected_region:
+        df_filtered = df[df['region'] == selected_region]
     elif selected_year:
         df_filtered = df[df['year'] == int(selected_year)]
     elif selected_date:
         selected_date = datetime.datetime.strptime(selected_date, '%Y-%m-%d').date()
         selected_month_date = selected_date.strftime('%B')
         selected_year_date = selected_date.year
-
+        
         df_filtered = df[(df['month'] == unique_months.index(selected_month_date) + 1) & (df['year'] == int(selected_year_date))]
-    else:
+    else:   
         df_filtered = df
 
     # Separate stats based on whether a specific request is selected
+    # stats => filtered data frame with total cases and deaths
     if selected_year and selected_month:
-        stats = df_filtered.groupby(['year', 'month', 'date']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
-        max_cases_month = None
-        max_deaths_month = None
-        has_data = None
+        if selected_region:
+            stats = df_filtered.groupby('loc').agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
 
-        if not stats.empty:
-            max_cases_date = stats.loc[stats['cases'].idxmax()]['date']
-            max_deaths_date = stats.loc[stats['deaths'].idxmax()]['date']
-            
-            # Convert date to a readable format
-            max_cases_date = max_cases_date.strftime('%Y-%m-%d')
-            max_deaths_date = max_deaths_date.strftime('%Y-%m-%d')
+            if not stats.empty:
+                # Find the location with the maximum total cases and deaths across all locations within the selected region
+                max_cases_location = stats.loc[stats['cases'].idxmax(), 'loc'] if stats['cases'].max() > 0 else ''
+                max_deaths_location = stats.loc[stats['deaths'].idxmax(), 'loc'] if stats['deaths'].max() > 0 else ''
 
-        title = f'Dengue Cases and Deaths for {selected_month} {selected_year}' + (f' in {selected_location}' if selected_location else '')
-        chart_html = create_chart_x_date(stats, title) if not stats.empty else ''
-    elif selected_year:
-        stats = df_filtered.groupby(['year', 'month']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
-        max_cases_date = None
-        max_deaths_date = None
-        has_data = None
-
-        if not stats.empty:
-            max_cases_month = stats.loc[stats['cases'].idxmax()]['month']
-            max_deaths_month = stats.loc[stats['deaths'].idxmax()]['month']
-            
-            # Convert month number to month name
-            max_cases_month = datetime.date(2022, int(max_cases_month), 1).strftime('%B')
-            max_deaths_month = datetime.date(2022, int(max_deaths_month), 1).strftime('%B')
-
-        title = f'Dengue Cases and Deaths in the Year {selected_year}' + (f' in {selected_location}' if selected_location else '')
-        chart_html = create_chart_x_month(stats, title) if not stats.empty else ''
-    elif selected_date:
-        stats = df_filtered.groupby(['year', 'month', 'date']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
-
-        if not stats[stats['date'] == selected_date].empty:
-            title = f'Dengue Cases and Deaths on {selected_date.strftime("%Y-%m-%d")}'
-            chart_html = create_chart_x_date(stats, title, selected_date)
+                title = f'Dengue Cases and Deaths in {selected_region}' + (f' for {selected_year}' if selected_year else '')
+                chart_html = create_chart_x_location(stats, title) if not stats.empty else ''
         else:
-            title = f'No data available for {selected_date.strftime("%Y-%m-%d")}'
-            chart_html = create_chart_x_date(stats, title, selected_date)
-            has_data = False
+            stats = df_filtered.groupby(['year', 'month', 'date']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
+            max_cases_month = None
+            max_deaths_month = None
+            max_cases_location = None
+            max_deaths_location = None
+            has_data = None
+
+            if not stats.empty:
+                max_cases_date = stats.loc[stats['cases'].idxmax()]['date'] if stats['cases'].max() > 0 else ''
+                max_deaths_date = stats.loc[stats['deaths'].idxmax()]['date'] if stats['deaths'].max() > 0 else ''
+                
+                # Convert date to a readable format
+                max_cases_date = max_cases_date.strftime('%Y-%m-%d') if max_cases_date else ''
+                max_deaths_date = max_deaths_date.strftime('%Y-%m-%d') if max_deaths_date else ''
+
+            title = f'Dengue Cases and Deaths for {selected_month} {selected_year}' + (f' in {selected_location}' if selected_location else '')
+            chart_html = create_chart_x_date(stats, title) if not stats.empty else ''
+    elif selected_year:
+        if selected_region:
+            stats = df_filtered.groupby('loc').agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
+
+            if not stats.empty:
+                # Find the location with the maximum total cases and deaths across all locations within the selected region
+                max_cases_location = stats.loc[stats['cases'].idxmax(), 'loc'] if stats['cases'].max() > 0 else ''
+                max_deaths_location = stats.loc[stats['deaths'].idxmax(), 'loc'] if stats['deaths'].max() > 0 else ''
+
+                title = f'Dengue Cases and Deaths in {selected_region}' + (f' for {selected_year}' if selected_year else '')
+                chart_html = create_chart_x_location(stats, title) if not stats.empty else ''
+        else:
+            stats = df_filtered.groupby(['year', 'month']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
+            max_cases_date = None
+            max_deaths_date = None
+            max_cases_location = None
+            max_deaths_location = None
+            has_data = None
+
+            if not stats.empty:
+                max_cases_month = stats.loc[stats['cases'].idxmax()]['month'] if stats['cases'].max() > 0 else ''
+                max_deaths_month = stats.loc[stats['deaths'].idxmax()]['month'] if stats['deaths'].max() > 0 else ''
+                
+                # Convert month number to month name
+                max_cases_month = datetime.date(2022, int(max_cases_month), 1).strftime('%B')
+                max_deaths_month = datetime.date(2022, int(max_deaths_month), 1).strftime('%B')
+
+            title = f'Dengue Cases and Deaths in the Year {selected_year}' + (f' in {selected_location}' if selected_location else '')
+            chart_html = create_chart_x_month(stats, title) if not stats.empty else ''
+    elif selected_date:
+        if selected_region:
+            stats = df_filtered.groupby(['year', 'month', 'date']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
+        else:
+            stats = df_filtered.groupby(['year', 'month', 'date']).agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
+
+        if not stats.empty:
+            if not stats[stats['date'] == selected_date].empty:
+                title = f'Dengue Cases and Deaths on {pd.to_datetime(selected_date).strftime("%B %d, %Y")}' + (f' in {selected_location}' if selected_location else '') + (f' in {selected_region}' if selected_region else '')
+                chart_html = create_chart_x_date(stats, title, selected_date)
+                has_data = True
+            else:
+                title = f'No data available for {pd.to_datetime(selected_date).strftime("%B %d, %Y")}' + (f' in {selected_location}' if selected_location else '') + (f' in {selected_region}' if selected_region else '')
+                chart_html = create_chart_x_date(stats, title, selected_date)
+                has_data = False
+        else:
+            chart_html = ''
+    elif selected_region:
+        stats = df_filtered.groupby('loc').agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
+
+        if not stats.empty:
+            # Find the location with the maximum total cases and deaths across all locations within the selected region
+            max_cases_location = stats.loc[stats['cases'].idxmax(), 'loc'] if stats['cases'].max() > 0 else ''
+            max_deaths_location = stats.loc[stats['deaths'].idxmax(), 'loc'] if stats['deaths'].max() > 0 else ''
+
+            title = f'Dengue Cases and Deaths' + (f' in the month of {selected_month}' if selected_month else '') + (f' in {selected_region}' if selected_region else '') + f' Over the Years'
+            chart_html = create_chart_x_location(stats, title) if not stats.empty else ''
+    # empty filter
     else:
         stats = df_filtered.groupby('year').agg({'cases': 'sum', 'deaths': 'sum'}).reset_index()
         max_cases_month = None
         max_deaths_month = None
         max_cases_date = None
         max_deaths_date = None
+        max_cases_location = None
+        max_deaths_location = None
         has_data = None
-        title = f'Dengue Cases and Deaths' + (f' in the month of {selected_month}' if selected_month else '')  + f' Over the Years'
+        title = f'Dengue Cases and Deaths' + (f' in the month of {selected_month}' if selected_month else '') + (f' in {selected_location}' if selected_location else '') + f' Over the Years'
         chart_html = create_chart_overall_stats(stats, title) if not stats.empty else ''
 
-    # checking the value of the stats
+    # checking the value of the stats for generating narration
     if not stats.empty:
-        max_cases_year = int(stats.loc[stats['cases'].idxmax()]['year'])
-        max_deaths_year = int(stats.loc[stats['deaths'].idxmax()]['year'])
-        
         if selected_date:
             max_deaths_date = None
             max_cases_date = None
@@ -252,16 +364,27 @@ def project1(request):
             max_deaths_month = None
             max_cases_year = None
             max_deaths_year = None
+            max_cases_location = None
+            max_deaths_location = None
+        elif selected_region:
+            max_deaths_date = None
+            max_cases_date = None
+            max_cases_month = None
+            max_deaths_month = None
+            max_cases_year = None
+            max_deaths_year = None
+            has_data = None
+        else:
+            max_cases_year = int(stats.loc[stats['cases'].idxmax()]['year']) if stats['cases'].max() > 0 else ''
+            max_deaths_year = int(stats.loc[stats['deaths'].idxmax()]['year']) if stats['deaths'].max() > 0 else ''
     else:
+        max_cases_location = None
+        max_deaths_location = None
         max_cases_year = None
         max_deaths_year = None
+        has_data = None
 
-    narration = generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, selected_location, selected_month, selected_year, selected_date, has_data) if not stats.empty else f"<b>No data available for the selected filters.</b>"
-
-    # if selected_date:
-    #     selected_date_formatted = selected_date.strftime('%Y/%m/%d')
-    # else:
-    #     selected_date_formatted = None
+    narration = generate_narration(max_cases_year, max_deaths_year, max_cases_month, max_deaths_month, max_cases_date, max_deaths_date, max_cases_location, max_deaths_location, selected_location, selected_month, selected_year, selected_date, selected_region, has_data) if not stats.empty else f"<b>No data available for the selected filters.</b>"
 
     context = {
         'dengue_data': df.head(5).to_dict(orient='records'),
@@ -270,7 +393,9 @@ def project1(request):
         'unique_years': unique_years,
         'unique_months': unique_months,
         'locations': locations,
+        'regions': regions,
         'selected_location': selected_location,
+        'selected_region': selected_region,
         'selected_month': selected_month,
         'selected_year': int(selected_year) if selected_year else None,
         'selected_date': selected_date,
