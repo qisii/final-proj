@@ -17,26 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
         reset: true,
     });
 
-    // home
-    // scrollReveal.reveal('.home-heading-container', { origin: 'bottom', distance: '20px', delay: 100 });
-    // scrollReveal.reveal('.home-heading', { origin: 'bottom', distance: '20px', delay: 300 });
-    // scrollReveal.reveal('.sub-heading', { origin: 'bottom', distance: '20px', delay: 500 });
-    // scrollReveal.reveal('.buttons-container', { origin: 'bottom', distance: '20px', delay: 700 });
-
-    // images
-    // scrollReveal.reveal('.image1', { origin: 'left', distance: '20px', delay: 200 });
-    // scrollReveal.reveal('.image2', { origin: 'bottom', distance: '20px', delay: 400 });
-    // scrollReveal.reveal('.image3', { origin: 'right', distance: '20px', delay: 600 });
-    // scrollReveal.reveal('.image4', { origin: 'left', distance: '20px', delay: 800 });
-
-    // members
-    scrollReveal.reveal('.member-subheading', { origin: 'bottom', distance: '50px', delay: 100, interval: 100 });
-    scrollReveal.reveal('.member-heading', { origin: 'bottom', distance: '50px', delay: 300, interval: 100 });
-    scrollReveal.reveal('.team-members', { origin: 'top', distance: '50px', delay: 500, interval: 100 });
-    scrollReveal.reveal('.members-section .buttons-container', { origin: 'bottom', distance: '50px', delay: 700 });
-
     // Page Headings and Narrations
-    scrollReveal.reveal('.page-subheading, .page-heading, .overview, .narration-column, .narration-hr, .narration-display p', {
+    scrollReveal.reveal('.narration-column, .narration-hr, .narration-display p', {
         origin: 'left',
         distance: '100px',
         delay: 200,
@@ -44,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Form and Chart
-    scrollReveal.reveal('.form-display, .chart-column, .form-geo-display, .chart-geo-column', {
+    scrollReveal.reveal('.form-display, .chart-column, .form-geo-display, .chart-geo-column, .chart-region-column', {
         origin: 'right',
         distance: '100px',
         delay: 200,
