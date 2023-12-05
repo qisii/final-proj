@@ -101,6 +101,37 @@
         </div>
         <hr class="more-hr">
         <!-- End of Page Content -->
+
+        <!-- By Regions -->
+        <!-- Context -->
+        <div class="region-content">
+            <p class="region-subheading">Exploring Dengue Cases and Deaths Across Philippine Regions (2016-2021)</p>
+            <div class="region-overview">This section provides a quick overview of Dengue cases and deaths across various regions of the Philippines from 2016-2021.
+                The total number of dengue cases and deaths is color-coded, signifies the degrees of intensity.
+            </div>
+        </div>
+        <div class="region-chart-content">
+            <div class="region-container">
+                <!-- Chart -->
+                <div class="chart-region-column">
+                    <div class="chart-region-display">
+                        {{ region_chart_html_cases|safe }}
+                    </div>
+                </div>
+                <!-- End of Chart -->
+
+                <!-- Chart -->
+                <div class="chart-region-column">
+                    <div class="chart-region-display">
+                        {{ region_chart_html_deaths|safe }}
+                    </div>
+                </div>
+                <!-- End of Chart -->
+            </div>
+            <!-- End of Column Container -->
+        </div>
+        <!-- End of By Regions -->
+        
     </div>
 </div>
 <!-- End of Container -->
