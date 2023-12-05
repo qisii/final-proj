@@ -400,7 +400,7 @@ body {
     padding: 0 6rem 0 6rem;
 }
 
-.page-subheading {
+.page-subheading, .region-content .region-subheading {
     color: var(--color-primary);
     font-size: 1rem;
     font-weight: 500;
@@ -416,6 +416,14 @@ body {
 }
 
 .overview {
+    color: var(--color-heading);
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.region-content .region-overview {
     color: var(--color-heading);
     font-size: 0.8rem;
     font-weight: 500;
@@ -551,6 +559,25 @@ body {
     width: 100%;
 }
 
+.more-hr {
+    border: 1px solid var(--color-danger);
+    width: 80%;
+    margin-bottom: 1rem;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.chart-region-column {
+    margin-bottom: 2rem;
+    height: 500px;
+    background-color: var(--color-white);
+    border-radius: 5px;
+}
+
+.chart-region-display {
+    padding: 1rem;
+    width: 100%;
+}
 /* ======================================== Pizza Hut */
 .form-geo {
     flex: 3;
@@ -645,11 +672,4 @@ body {
 .chart-geo-display {
     padding: 1rem;
     width: 100%;
-}
-
-.more-hr {
-    border: 1px solid var(--color-danger);
-    width: 80%;
-    margin-bottom: 1rem;
-    justify-content: center;
 }
