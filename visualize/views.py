@@ -157,7 +157,7 @@ def create_chart_overall_stats(stats, title, height=500):
     fig.update_xaxes(tickmode='array', tickvals=stats['year'].unique())
     fig.update_layout(plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)')
     fig.update_xaxes(gridcolor='#F2F3F4')
-    fig.update_yaxes(gridcolor='#F2F3F4', dtick=10 ** math.ceil(math.log10(max(stats['cases'].max(), stats['deaths'].max())))/20)
+    fig.update_yaxes(gridcolor='#F2F3F4')
     fig.update_layout(xaxis_title='Year', yaxis_title='Count', legend_title='Legend', height=height)
     fig.update_layout(title={'text': title, 'x': 0.5})
     return fig.to_html()
