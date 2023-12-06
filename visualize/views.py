@@ -543,5 +543,4 @@ def project3(request):
         'selected_region': selected_region
     }
 
-
-    return render(request, 'visualize/project3.html')
+    return render(request, 'visualize/project3.html', context)
