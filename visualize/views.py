@@ -5,7 +5,7 @@ import json
 from django.http import HttpResponse
 import pandas as pd
 import numpy as np
-from .models import Dengue
+from .models import Dengue, FamilyIncomeExpenditure
 from io import BytesIO, StringIO
 import base64
 import matplotlib
@@ -452,5 +452,96 @@ def project2(request):
 
 
 # Bonus
+def clean_family_data(df):
+    df['region'] = df['region'].replace('IX - Zasmboanga Peninsula', 'IX - Zamboanga Peninsula')
+    df['region'] = df['region'].replace('XI - Davao Region', 'XI - Davao')
+    df['region'] = df['region'].replace('Caraga', 'XIII - Caraga')
+    
+    return df
+
+def bar_chart(chart_input, x_axis, title):
+    fig = px.bar(chart_input, x=x_axis, y='region', color=x_axis, title=title, height=500)
+
+    if x_axis == 'income':
+        fig.update_layout(xaxis_title='Total Household Income', yaxis_title='Region', legend_title='Legend', height=500)
+    else:
+        fig.update_layout(xaxis_title=f'{x_axis.capitalize()} Expenditure', yaxis_title='Region')
+    
+    return fig.to_html()
+
+def narrate_data(selected_region, selected_expenditure, region_expenditure_data):
+    narration = f"The graph illustrates the total"
+
+    if selected_expenditure == 'income':
+        narration += f" <u>household income</u> of each region. "
+    else:
+        narration += f" <u>{selected_expenditure}</u> expenditure of each region. "
+        
+    narration += f"<br><br>"
+
+    if selected_region:    
+        narration += f"The region of <u>{selected_region}</u> tallied an appoximate value of <strong>{region_expenditure_data}</strong>."
+    
+    return narration
+
 def project3(request):
+    family_data = FamilyIncomeExpenditure.objects.all()
+    df = pd.DataFrame(list(family_data.values()))
+    df = clean_family_data(df)
+    
+    expenditure_columns = df.columns[3:].tolist()
+    regions = sorted(df['region'].unique())
+
+    display_names = {
+        'food': 'Food Expenditure',
+        'rice': 'Rice Expenditure',
+        'bread_cereal': 'Bread and Cereals Expenditure',
+        'meat': 'Meat Expenditure',
+        'fish': 'Fish & Marine Products Expenditure',
+        'fruits': 'Fruits Expenditure',
+        'vegetables': 'Vegetables Expenditure',
+        'hotels': 'Hotels and Restaurants Expenditure',
+        'alcohol': 'Alcoholic Beverages Expenditure',
+        'tobacco': 'Tobacco Expenditure',
+        'clothing': 'Clothing, Footwear and Other Wear Expenditure',
+        'housing': 'Housing and Water Expenditure',
+        'medical': 'Medical Care Expenditure',
+        'transport': 'Transportation Expenditure',
+        'communication': 'Communication Expenditure',
+        'education': 'Education Expenditure',
+        'miscellaneous': 'Miscellaneous Goods and Services Expenditure',
+        'occasions': 'Special Occasions Expenditure',
+        'farming': 'Crop Farming and Gardening Expenditure',
+    }
+    expenditure_columns = [display_names.get(expenditure, expenditure) for expenditure in expenditure_columns]
+
+    selected_expenditure = request.POST.get('expenditure')
+    selected_region = request.POST.get('region')
+
+    if selected_expenditure:
+        selected_expenditure = [key for key, value in display_names.items() if value == selected_expenditure][0]
+        agg_df = df.groupby('region').agg({selected_expenditure: 'sum'}).reset_index()
+    else:
+        agg_df = df.groupby('region').agg({'income': 'sum'}).reset_index()
+        selected_expenditure = 'income'
+    
+    agg_df = agg_df.sort_values('region', ascending=False)
+
+    region_expenditure_data = agg_df.loc[agg_df['region'] == selected_region, selected_expenditure].sum()
+
+    narration = narrate_data(selected_region, selected_expenditure, region_expenditure_data)
+
+    title = f'Total Household Income of Each Region' if selected_expenditure == 'income' else f'Total {selected_expenditure.capitalize()} Expenditure of Each Region'
+    chart = bar_chart(agg_df, selected_expenditure, title)
+
+    context = {
+        'chart': chart,
+        'narration': narration,
+        'selected_expenditure': selected_expenditure,
+        'expenditure_columns': expenditure_columns,
+        'regions': regions,
+        'selected_region': selected_region
+    }
+
+
     return render(request, 'visualize/project3.html')
