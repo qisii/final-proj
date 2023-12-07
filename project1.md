@@ -3,7 +3,7 @@
 ### Setting up project
 
 1. **Create a Folder:**
-   - Create a new folder for your Django project.
+   - Create a new folder. This folder serves as the central location for your Django project and app. (Like a main folder).
 
 2. **Navigate to the Folder:**
    - Open your terminal or command prompt and navigate to the created folder.
@@ -83,12 +83,13 @@
     - Back in the project, update the database name and password in your 'settings.py'.
 
 
+
 ## Import CSV to PostgreSQL Using Django Management Commands
 
 ### Preparing and Importing Data
 
 1. **Create a Data Folder:**
-   - Outside the Django app, create a folder to store your datasets.
+   - In your main folder, create a folder to store your datasets.
 
 2. **Check CSV Columns:**
    - Examine the columns of your CSV file to ensure compatibility with your Django model.
@@ -117,3 +118,86 @@
 
 8. **Check Results in pgAdmin:**
    - Once the import process is successful, check the results in pgAdmin to ensure the data has been added to the respective tables.
+
+
+## Development and Coding
+
+### Running the Django Server
+
+1. **Check Django Installation:**
+   - Ensure Django is installed in your virtual environment.
+
+2. **Run the Server:**
+   - Start the Django development server to check if everything is working.
+     ```bash
+     python manage.py runserver
+     ```
+
+### Adding Your Django App to Settings
+
+3. **Modify 'settings.py':**
+   - Include your Django app in the 'INSTALLED_APPS' section of 'settings.py'.
+     ```python
+     INSTALLED_APPS = [
+         # other apps
+         'your_app',
+     ]
+     ```
+
+### Creating Django Templates
+
+4. **Create Templates and Static Folders:**
+   - Organize your HTML files in a 'templates' folder and store static files (CSS, JS, images) in a 'static' folder.
+   
+5. **Configure Templates in 'settings.py' (Django project folder):**
+   - Connect your Django templates by configuring the 'TEMPLATES' section in 'settings.py'.
+     ```python
+     'DIRS': [os.path.join(BASE_DIR, 'templates')],
+     ```
+
+### Adding Routes
+
+6. **Configure 'urls.py' (Django project folder):**
+   - Open the 'urls.py' file in your Django project and connect your app's URLs.
+     ```python
+     from django.urls import path, include
+     urlpatterns = [
+         path('admin/', admin.site.urls),
+         path('', include('your_app.urls')),
+     ]
+     ```
+
+### Creating Views and Rendering HTML Pages
+
+7. **Create HTML Templates:**
+   - In the 'templates' folder, create 'base.html' (parent) and 'index.html' (child) files. 'base.html' can contain frontend dependencies or CDNs.
+
+8. **Define Views in 'views.py':**
+   - Create a view function in 'views.py' and render HTML pages.
+   - Django views are responsible for handling the logic of your application, processing data, and deciding which template to render or which response to send back.
+     ```python
+     def index(request):
+         # add logic here as needed for your views functionality
+         return render(request, 'your_app/index.html')
+     ```
+
+9. **Configure URLs in 'urls.py' (Django app folder):**
+   - Connect your app's views in 'urls.py'.
+     ```python
+     from django.urls import path
+     from . import views
+
+     urlpatterns = [
+         path('', views.index, name="index"),
+         # add more views here
+     ]
+     ```
+
+10. **Check Browser:**
+    - Visit your browser to ensure everything is working correctly.
+
+**Note:**
+Follow these steps vice versa to create additional views, templates, and static files for your Django project. Additionally, remember to:
+1. Add a Django view to render an HTML page (`views.py`).
+2. Include the route for the Django view in the project's URL configuration (`urls.py`). Add logic in your views as needed for functionality.
+3. Repeat the process as necessary to enhance the functionality of your project.
