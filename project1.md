@@ -81,3 +81,39 @@
 
 14. **Update Database Settings:**
     - Back in the project, update the database name and password in your 'settings.py'.
+
+
+## Import CSV to PostgreSQL Using Django Management Commands
+
+### Preparing and Importing Data
+
+1. **Create a Data Folder:**
+   - Outside the Django app, create a folder to store your datasets.
+
+2. **Check CSV Columns:**
+   - Examine the columns of your CSV file to ensure compatibility with your Django model.
+
+3. **Create Django Model:**
+   - In the 'models.py' file of your Django app, define a model reflecting the CSV structure. Apply appropriate data types to each column.
+
+4. **Management Commands Setup:**
+   - Inside your Django app, create a 'management' folder. Within 'management', create a 'commands' folder.
+
+5. **Create Command Files:**
+   - In the 'commands' folder, create a file for each dataset. Write the code to import the CSV into the corresponding Django model.
+
+6. **Run Migrations:**
+   - Open the terminal and run migrations to apply the changes to your database.
+     ```bash
+     python manage.py makemigrations
+     python manage.py migrate
+     ```
+
+7. **Run Import Commands:**
+   - Execute commands to import CSV data into the database.
+     ```bash
+     python manage.py (name_of_the_file_to_import)
+     ```
+
+8. **Check Results in pgAdmin:**
+   - Once the import process is successful, check the results in pgAdmin to ensure the data has been added to the respective tables.
