@@ -74,11 +74,10 @@
     - If using PostgreSQL, install the required package.
       ```bash
       pipenv install psycopg2==2.7.7
-     ```
+      ```
 
 13. **Configure PostgreSQL:**
     - In pgAdmin, create a database with appropriate settings.
 
 14. **Update Database Settings:**
     - Back in the project, update the database name and password in your 'settings.py'.
-
