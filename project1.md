@@ -8,7 +8,7 @@
 2. **Navigate to the Folder:**
    - Open your terminal or command prompt and navigate to the created folder.
      ```bash
-     cd your_project_folder
+     cd your_main_folder
      ```
 
 3. **Activate Virtual Environment:**
