@@ -201,3 +201,69 @@ Follow these steps vice versa to create additional views, templates, and static 
 1. Add a Django view to render an HTML page (`views.py`).
 2. Include the route for the Django view in the project's URL configuration (`urls.py`). Add logic in your views as needed for functionality.
 3. Repeat the process as necessary to enhance the functionality of your project.
+
+
+## Data Visualization Development Steps
+
+1. **Import Required Libraries:**
+   - Ensure the necessary libraries are imported in your `views.py` file (or you can install other packages):
+
+2. **Define Data Visualization Functions:**
+   - Copy the provided functions into your `views.py` file. These functions handle data preprocessing, narration generation, and chart creation.
+   - Data Prepocessing function
+   ```python
+     def clean_data(df):
+       # Dropping missing values
+       # Replacing certain location names
+       # Filling NaN values in 'cases' and 'deaths' columns
+       # Converting date columns to datetime format.
+       return df
+     ```
+   - Function that handles user input.
+   ```python
+     def function_name(request):
+       #add logic here
+       context = {
+        # add context dictionary you want to display in your templates
+        # generate content in your web pages based on the data you pass from the server (views) to the client (templates).
+    }
+
+    return render(request, 'visualize/project1.html', context)
+     ```
+
+4. **Update Existing Views:**
+   - Integrate the new data visualization logic into your existing views, such as `index` and `project1`. Handle user inputs appropriately.
+     ```python
+     def function_name(request):
+      # Fetch all Dengue objects from the database using the Django ORM
+      # Convert the Django QuerySet to a Pandas DataFrame
+      # Clean the data using the clean_data function
+      # Values for the dropdowns (locations, regions, years, and months)
+
+      # Get user input
+      # Handle user input combinations
+      # Handle user inputs. Filter dataframe before calculating stats(total cases and deaths)
+      # Separate stats based on whether a specific request is selected. Generate chart based on stats
+      # stats => filtered data frame with total cases and deaths
+
+      # Checking the value of the stats for generating narration
+      # Default chart. By regions
+       context = {
+        # add context dictionary you want to display in your templates
+        # generate content in your web pages based on the data you pass from the server (views) to the client (templates).
+    }
+
+    return render(request, 'visualize/project1.html', context)
+     ```
+
+5. **Create HTML Templates:**
+   - Ensure you have HTML templates (e.g., 'visualize/project1.html') for rendering the data visualization charts. Customize the templates based on your application's design.
+
+   ```markdown
+   ### Data Visualization Usage
+
+   - Ensure you have the required dependencies installed.
+   - Start your Django development server.
+   - Visit the data visualization page in your web browser.
+   - Explore the charts by selecting different filters and options.
+   - Follow the provided narration for insights into the data.
