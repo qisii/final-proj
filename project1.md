@@ -251,8 +251,8 @@ Follow these steps vice versa to create additional views, templates, and static 
        context = {
         # add context dictionary you want to display in your templates
         # generate content in your web pages based on the data you pass from the server (views) to the client (templates).
-    }
-   return render(request, 'visualize/project1.html', context)
+     }
+     return render(request, 'visualize/project1.html', context)
      ```
 
 6. **Create HTML Templates:**
