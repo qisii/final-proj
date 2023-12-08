@@ -40,7 +40,8 @@
     python manage.py runserver
     ```
 
-11. Access the project at http://127.0.0.1:8000/.
+11. Access the project at y
+/.
 
 ## Troubleshooting
 

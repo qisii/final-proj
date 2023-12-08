@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect 
 
 # added
 import json
 from django.http import HttpResponse
 import pandas as pd
 import numpy as np
-from .models import Dengue, FamilyIncomeExpenditure
+from .models import Dengue, FamilyIncomeExpenditure, PizzaHutLocation
 from io import BytesIO, StringIO
 import base64
 import matplotlib
@@ -15,6 +15,7 @@ import math
 import datetime, calendar
 import plotly.express as px
 from django.contrib import messages
+
 
 
 
@@ -446,11 +447,14 @@ def project1(request):
 
     return render(request, 'visualize/project1.html', context)
 
-# Mapping
+# Mapping 
+
 def project2(request):
-    return render(request, 'visualize/project2.html')
-
-
+    coords = list(PizzaHutLocation.objects.values('address_1','city','state', 'latitude', 'longitude')) 
+    context = {'coords':coords }
+    return render(request, 'visualize/project2.html', context)
+ 
+ 
 # Bonus
 def clean_family_data(df):
     df['region'] = df['region'].replace('IX - Zasmboanga Peninsula', 'IX - Zamboanga Peninsula')

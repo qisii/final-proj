@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views
+from . import views 
 
 urlpatterns =[
     path('', views.index, name="index"),
@@ -8,3 +8,5 @@ urlpatterns =[
     path('project2/', views.project2, name="project2-pizza"),
     path('project3/', views.project3, name="project3-family"),
 ]
+
+ 
