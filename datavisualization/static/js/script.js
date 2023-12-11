@@ -33,6 +33,14 @@ document.addEventListener('DOMContentLoaded', function () {
         interval: 100
     });
 
+    // index
+    scrollReveal.reveal('.member-subheading, .member-heading, .team-members, .members-section .buttons-container',{
+        origin: 'top',
+        distance: '50px',
+        delay: 100,
+        interval: 100
+    });
+
     // More
     scrollReveal.reveal('.more-hr', {
         origin: 'left',

@@ -9,29 +9,72 @@
     <!-- Topbar -->
     {% include 'partials/_topbar.html' %}
 
-    <!-- Home Main Content -->
     <div class="home-content" id="home">
-        <div class="home-heading-container">
-            <div class="home-heading">
-                DATA<br>VISUALIZATION
+        <div class="home-content-container">
+            <div class="text-and-button-container">
+                <div class="home-heading-container">
+                    <div class="home-heading">
+                        DATA<br>VISUALIZATION
+                    </div>
+                    <div class="sub-heading">
+                        Develop dashboards for the web app, applying the principles 
+                        <br>of data storytelling to effectively communicate information about the data.
+                    </div>
+                    <div class="buttons-container">
+                        <a href="/project1" class="action-button">Get Started</a>
+                        <button class="member-button">Members</button>
+                    </div>
+                </div>
             </div>
-            <div class="sub-heading">
-                Develop dashboards for the web app, applying the principles <br>of data storytelling to effectively communicate information about the data.
-            </div>
-            <div class="buttons-container">
-                <a href="/project1" class="action-button">Get Started</a>
-                <button class="member-button">Members</button>
+            <div class="image-container">
+                <img src="{% static 'images/dataviz.png' %}" alt="chart">
             </div>
         </div>
-        
-    </div>
+    </div>    
 
     </div>
+    
 
     <div id="members-section" class="members-section">
         <p class="member-subheading">Presenting</p>
         <p class="member-heading">Our Team Members</p>
         
+        <div class="team-members">
+            <div class="team-member">
+                <img src="{% static 'images/2.jpg' %}" alt="Quisie Caporte">
+                <p>Quisie Caporte</p>
+            </div>
+            <div class="team-member">
+                <img src="{% static 'images/2.jpg' %}"  alt="Ronalyn Villamor">
+                <p>Ronalyn Villamor</p>
+            </div>
+            <!-- Add more team members using the same structure -->
+            <div class="team-member">
+                <img src="{% static 'images/2.jpg' %}"  alt="Jonaem Azis">
+                <p>Jonaem Azis</p>
+            </div>
+            <div class="team-member">
+                <img src="{% static 'images/2.jpg' %}"  alt="Mark Dayag">
+                <p>Mark Brylle Dayag</p>
+            </div>
+            <div class="team-member">
+                <img src="{% static 'images/2.jpg' %}"  alt="Dave Mosqueda">
+                <p>Dave Mosqueda</p>
+            </div>
+        </div>
     </div>
+    
 </div>
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; 2023 ITD112 Final Project of Group 5</p>
+        </div>
+    </div>
+</footer>
+
+
+
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
 {% endblock %}
