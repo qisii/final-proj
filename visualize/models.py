@@ -28,7 +28,7 @@ class PizzaHutLocation(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.type} - {self.address_1}, {self.city}, {self.state} {self.postal_code}"
+        return f"{self.type} - {self.address_1}, {self.city}, {self.Marker} {self.postal_code}"
 
 # Family IES Data Model
 class FamilyIncomeExpenditure(models.Model):

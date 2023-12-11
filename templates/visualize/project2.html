@@ -26,46 +26,75 @@
                 <!-- Form -->
                 <div class="form-geo">
                     <div class="form-geo-display">
-                        <form>
-                
-                            <!-- <label for="type">Type:</label> -->
-                            <div class="custom-select">
-                                <span class="material-icons-sharp">expand_more</span>
-                                <select id="type" name="type">
-                                    <!-- Add your type options here -->
-                                    <option value="">Select Type</option>
-                                    <option value="type"></option>
-                                    <!-- Add other type as needed -->
-                                </select>
-                            </div>
-                
-                            <!-- <label for="location">Location:</label> -->
-                            <!-- <select id="location" name="location">
-                                <option value="">Select Location</option>
-                                <option value="manila">Manila</option>
-                            </select> -->
+                        <form method="post">
 
                             <div class="custom-select">
                                 <span class="material-icons-sharp">expand_more</span>
-                                <select id="city" name="city">
-                                    <!-- Add your city options here -->
-                                    <option value="">Select City</option>
-                                    <option value="">Manila</option>
-                                    <!-- Add other city as needed -->
-                                </select>
+                                <select id="state-selector">
+                                    <option value="all">All States</option>
+                                    <option value="AL">Alabama</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="DC">District Of Columbia</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WY">Wyoming</option>
+                                </select>   
                             </div>
-                
-                            <button type="submit">Submit</button>
+                 
                         </form>
                     </div>
                     <!-- End of Form -->
 
                     <!-- Chart -->
-                    <div class="chart-geo-column">
-                        <div class="chart-geo-display">
-                            
-                        </div>
+                    <div class="chart-geo-column" id="map"> 
+   
                     </div>
+                    {{ coords|json_script:"coords_json"}}
                     <!-- End of Chart -->
 
                     <hr class="more-hr">
@@ -77,4 +106,92 @@
         <!-- End of Page Content -->
     </div>
 </div>
+
+<script>
+
+// marker
+var pizzaIcon = L.icon({
+    iconUrl: '.././static/images/pizza.png',  // URL to the custom icon image
+
+    iconSize: [12, 12],  // Size of the icon
+    iconAnchor: [16, 32],  // Anchor point of the icon, usually the center
+    popupAnchor: [0, -32]  // Popup anchor point relative to the icon anchor
+});
+
+let coords = JSON.parse(document.getElementById('coords_json').textContent);
+
+// Initialize the map
+var map = L.map('map').setView([37.0902, -95.7129], 4);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// GeoJSON layer for state boundaries
+var stateLayer;
+
+// Function to filter markers based on the selected state
+function updateMarkers(selectedState) {
+    // Clear existing markers
+    map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
+    });
+
+    // Filter and add markers for the selected state
+    const markersForSelectedState = coords.filter(coord => selectedState === 'all' || coord.state === selectedState);
+
+    if (markersForSelectedState.length === 0) {
+        alert("No results found for the selected state.");
+        return;
+    }
+
+    markersForSelectedState.forEach(coord => {
+        L.marker([coord.latitude, coord.longitude], { icon: pizzaIcon })
+            .addTo(map)
+            .bindPopup("<h1> Location </h1>" + coord.address_1 + ", " + coord.city + " city, " + coord.state);
+    });
+
+    // Highlight and center the selected state
+    highlightState(selectedState);
+}
+
+// Function to highlight and center the selected state
+function highlightState(selectedState) {
+    // Reset style for all states
+    if (stateLayer) {
+        stateLayer.setStyle({ fillOpacity: 0.2, color: 'white' });
+    }
+
+    // Find the selected state in the GeoJSON layer and highlight it
+    stateLayer.eachLayer(layer => {
+        if (layer.feature.properties.STUSPS === selectedState) {
+            // Highlight the selected state
+            layer.setStyle({ fillOpacity: 0.5, color: 'lightcoral' });
+
+            // Get the bounds of the selected state
+            const bounds = layer.getBounds();
+
+            // Log bounds for debugging
+            console.log('Bounds:', bounds);
+
+            // Zoom in on the selected state with a bit of padding
+            map.fitBounds(bounds.pad(0.5));
+        }
+    });
+}
+
+// Event listener for state selector change
+document.getElementById('state-selector').addEventListener('change', function () {
+    var selectedState = this.value;
+    // Update markers based on the selected state
+    updateMarkers(selectedState);
+});
+
+// Load markers for all states initially
+updateMarkers('all');
+
+ 
+
+</script>
 {% endblock %}
